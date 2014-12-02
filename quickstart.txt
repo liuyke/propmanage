@@ -1,31 +1,31 @@
-1.½«distÎÄ¼ş¼ĞÏÂµÄpropmanage_1.0.0.jarÒıÈëÏîÄ¿
+1.å°†distæ–‡ä»¶å¤¹ä¸‹çš„propmanage_1.0.0.jarå¼•å…¥é¡¹ç›®
 
-2.ÔÚweb.xml×¢²áPropManageServlet£¬ÅäÖÃÈçÏÂ£º
+2.åœ¨web.xmlæ³¨å†ŒPropManageServletï¼Œé…ç½®å¦‚ä¸‹ï¼š
  <servlet>
     <servlet-name>PropManageServlet</servlet-name>
     <servlet-class>com.prop.servlet.PropManageServlet</servlet-class>
     <init-param>
-	<!--µÇÂ¼ÅäÖÃ¹ÜÀíµÄÓÃ»§Ãû-->
+	<!--ç™»å½•é…ç½®ç®¡ç†çš„ç”¨æˆ·å-->
     	<param-name>loginUsername</param-name>
     	<param-value>admin</param-value>
     </init-param>
     <init-param>
-    	<!--µÇÂ¼ÅäÖÃ¹ÜÀíµÄÃÜÂë-->
+    	<!--ç™»å½•é…ç½®ç®¡ç†çš„å¯†ç -->
     	<param-name>loginPwd</param-name>
     	<param-value>dascom</param-value>
     </init-param>
     <init-param>
-	<!--Òª¹ÜÀíµÄÅäÖÃÎÄ¼ş-->
+	<!--è¦ç®¡ç†çš„é…ç½®æ–‡ä»¶-->
     	<param-name>configFile</param-name>
     	<param-value>cfg.properties</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>PropManageServlet</servlet-name>
-     <!--²»¿ÉĞŞ¸Ä-->
+     <!--ä¸å¯ä¿®æ”¹-->
     <url-pattern>/prop/*</url-pattern>
   </servlet-mapping>
 
-3.Æô¶¯ÏîÄ¿£¬·ÃÎÊ¹ÜÀí³ÌĞò£¬ÊäÈëhttp://127.0.0.1:¶Ë¿Ú/ÏîÄ¿Ãû/prop 
+3.å¯åŠ¨é¡¹ç›®ï¼Œè®¿é—®ç®¡ç†ç¨‹åºï¼Œè¾“å…¥http://127.0.0.1:ç«¯å£/é¡¹ç›®å/prop 
 
-4.´úÂëÖĞÊ¹ÓÃPropertiesUtil.get(key)·½·¨»ñÈ¡ÅäÖÃĞÅÏ¢¡£
+4.ä»£ç ä¸­å¿…é¡»ä½¿ç”¨PropertiesUtil.get(key)æ–¹æ³•è·å–é…ç½®ä¿¡æ¯ï¼Œå¦åˆ™ä¿®æ”¹é…ç½®ä¿¡æ¯éœ€è¦é‡å¯æœåŠ¡æ‰èƒ½ç”Ÿæ•ˆã€‚
