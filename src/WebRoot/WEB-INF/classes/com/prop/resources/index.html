@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>配置管理</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style type="text/css">
+    	body {
+    		font: 12px/1.5 tahoma,arial,Hiragino Sans GB,\5b8b\4f53;
+    	}
+    	.tab {
+    		border-top: 1px solid #e4e4e4;
+    		border-left: 1px solid #e4e4e4;
+    		border-right: 0;
+    		border-bottom: 0;
+    		min-width: 600px;
+    	}
+    	.tab tbody tr:nth-child(odd) {
+    		background:#ffffff;
+    	}
+    	.tab tbody tr:nth-child(even) {
+    		background:#f9f9f9;
+    	}
+    	td {
+    		padding: 3px 5px;
+    		border: 1px solid #e4e4e4;
+    		border-top:0;
+    		border-left:0;
+    		text-align: center;
+    		width: 250px;
+    		height: 30px;
+    	}
+    	.xu {
+    		width: 30px;
+    	}
+    	.key {width: 120px;padding: 0;margin: 0;}
+    	.but {
+    		width: 70px;
+    		height: 25px;
+    	}
+    	.marg {
+    		margin-left: 30px;
+    	}
+    	.val {padding: 0 10px;margin: 0;}
+    	.hover {background: #ffffdd;}
+    </style>
+  </head>
+   <body style="text-align:center;">
+   	<div id="content" style="margin:0 auto;width:900px;height:auto;padding:10px 10px 20px 10px;">
+  		<div style="margin-bottom: 10px">
+  			<input type="button" value="添加" class="but" id="add"/>
+  			<input type="button" value="保存" class="but marg" id="save"/>
+  			<input type="button" value="取消" class="but marg" onclick="window.location.reload();"/>
+  		</div>
+  		<table id="mytable" class="tab" cellpadding="0" cellspacing="0" align="center">
+  			<thead>
+	  			<tr style="background: #dadada;">
+	  				<td class="xu">序号</td>
+	  				<td class="key" style="cursor: pointer;" id="sort">键
+	  					<span style="font-weight: bolder;" id="icon">↑</span></td>
+	  				<td>值</td>
+	  			</tr>
+  			</thead>
+  			<tbody>
+  				
+  			</tbody>
+  		</table>
+	</div>
+    <script src="js/jquery.min.js"></script>
+	<script type="text/javascript">
+	 	var edit;
+	 	function createEle(i,k,v) {
+	 		return "<tr><td class=\"xu\">"+i+"</td><td class=\"key\">"+k+"</td><td class=\"val\">"+v+"</td></tr>";
+	 	}
+	 	
+	 	function init() {
+	 		$("#add").click(function() {
+	 			if(!edit) {
+		 			$(".tab tbody").prepend("<tr><td class='xu'>&nbsp;</td><td class='key'><input style='width:98%;height:100%;line-height: 22px;' id='key' maxlength='100'/></td><td style='padding:0;margin:0;'><input style='width:99%;height:100%;line-height: 22px;' id='val' maxlength='500'/></td></tr>");
+		 			edit = true;
+	 			}
+	 		});
+	 		
+	 		$("#save").click(function() {
+	 			var key = $.trim($('#key').val());
+	 			var val = $.trim($('#val').val());
+	 			if(edit && (key == "" || val == "")) {
+	 				alert("请输入完整的配置信息");
+	 				return false;
+	 			} else {
+		 			if(edit) {
+		 				$.post("saveorupdate",{name:key,value:val},function(data) {
+		 					if(data) {
+		 						window.location.reload();
+		 					} else alert("操作异常！");
+		 				});
+		 			}
+	 			}
+	 		});
+	 		
+	 		$("#del").click(function(){
+	 			var names = "";
+	 			$.each($(".tab tbody tr").find("input[type=checkbox]:checked"),function() {
+	 				if(this.value != "") {
+		 				names += (this.value + ",");
+	 				}
+	 			});
+	 			if(names != "") {
+	 				if(confirm("确认删除选中的项目吗？")) {
+			 			$.post("delete",{names:names},function(data){
+			 				if(data) window.location.reload();
+			 				else alert("操作异常！");
+			 			});
+		 			}
+	 			}
+	 		});
+	 	}
+	 	
+	 	function ascSort(data) {
+	 		var index = 0;
+			var ks = new Array();
+			$.each(data,function(k,v) {
+				ks.push(k);
+			});
+			ks.sort();
+			for(var i=0;i<ks.length;i++) {
+				$(".tab tbody").append(createEle(++index,ks[i],data[ks[i]]));
+			}
+	 	}
+	 	
+	 	function descSort(data) {
+	 		var index = 0;
+			var ks = new Array();
+			$.each(data,function(k,v) {
+				ks.push(k);
+			});
+			ks.sort();
+			for(var i=ks.length - 1;i>-1;i--) {
+				$(".tab tbody").append(createEle(++index,ks[i],data[ks[i]]));
+			}
+	 	}
+	 	
+	 	$(function(){
+			init();
+	 		$.post("list",function(data) {
+				ascSort(data);
+			});
+			
+			$("#mytable").delegate("tbody tr", "mouseenter", function() {
+	 			$(this).find("td").addClass("hover");
+	 		}).delegate("tr", "mouseleave", function() {
+	 			$(this).find("td").removeClass("hover");
+	 		}).delegate(".val","dblclick",function() {
+	 			if(!edit) {
+	 				edit = true;
+		 			var name = $(this).css("padding","0").prev().html();
+					$(this).html("<input type='hidden' id='key' value='"+name+"'/><input style='width:99%;height:100%;line-height: 22px' id='val' value='"+$(this).html()+"' maxlength='500'/>");
+	 			}
+	 		});
+	 		
+	 		var asc = true;
+	 		$("#sort").click(function() {
+ 				$("#mytable tbody").empty();
+ 				$.post("list",function(data) {
+ 					if(asc) {
+						descSort(data);
+						asc = false;
+						$("#icon").html("↓");
+					} else {
+						ascSort(data);
+						asc = true;
+						$("#icon").html("↑");
+					}
+				});
+	 		});
+	 	});
+	</script>
+  </body>
+</html>
